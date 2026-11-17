@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="th" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NO DUST, JUST BREATHE | ทวงคืนฟ้าใส ให้เชียงใหม่ได้หายใจ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt & Kanit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Prompt', 'sans-serif'],
+                        body: ['Kanit', 'sans-serif'],
+                    },
+                    colors: {
+                        leaf: {
+                            50: '#E8F5E9',
+                            100: '#C8E6C9',
+                            600: '#2E7D32',
+                            700: '#1B5E20',
+                        },
+                        skyclear: {
+                            50: '#E1F5FE',
+                            100: '#B3E5FC',
+                            500: '#03A9F4',
+                            600: '#0288D1',
+                            700: '#01579B',
+                        },
+                        smog: {
+                            700: '#455A64',
+                            800: '#37474F',
+                            900: '#263238',
+                        },
+                        alert: {
+                            500: '#FF9800',
+                            600: '#EF6C00',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* การตั้งค่าการแสดงผลและตัดคำภาษาไทยให้สวยงาม */
+        body {
+            font-family: 'Kanit', sans-serif;
+            word-break: normal;
+            overflow-wrap: break-word;
+            text-rendering: optimizeLegibility;
+        }
+        h1, h2, h3, h4, h5, h6, .font-heading {
+            font-family: 'Prompt', sans-serif;
+            text-wrap: balance;
+        }
+        p, li, span {
+            text-wrap: pretty;
+        }
+        /* ปรับแต่งแถบเลื่อนระยะทางวิ่ง */
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 50%;
+            background: #2E7D32;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+            cursor: pointer;
+            margin-top: -8px;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: #C8E6C9;
+            border-radius: 999px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased overflow-x-hidden">
+
+    <!-- กล่องแจ้งเตือน (Toast Notification) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700">
+            <div class="bg-leaf-600 p-1.5 rounded-full">
+                <i data-lucide="check" class="w-4 h-4 text-white"></i>
+            </div>
+            <span id="toast-message" class="text-sm font-normal">ดำเนินการเรียบร้อยแล้ว</span>
+        </div>
+    </div>
+
+    <!-- เมนูนำทาง (Navbar) -->
+    <nav class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16 sm:h-20">
+                <!-- โลโก้ข้อความ -->
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-skyclear-600 to-leaf-600 p-1.5 shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center">
+                        <svg viewBox="0 0 64 64" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="46" cy="18" r="7" fill="#FDE047"/>
+                            <path d="M6 48L24 22L36 37L44 27L58 48H6Z" fill="#A7F3D0"/>
+                            <path d="M24 14L26.5 22H21.5L24 14Z" fill="#FBBF24"/>
+                            <path d="M10 53C20 49 32 57 54 51" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <span class="font-heading font-extrabold text-base sm:text-lg tracking-tight text-slate-900">
+                        NO DUST, <span class="text-leaf-600">JUST BREATHE</span>
+                    </span>
+                </a>
+
+                <!-- ลิงก์เมนู (Desktop) -->
+                <div class="hidden md:flex items-center space-x-7 text-sm font-heading font-medium text-slate-600">
+                    <a href="#situation" class="hover:text-skyclear-600 transition-colors">สถานการณ์</a>
+                    <a href="#impacts" class="hover:text-skyclear-600 transition-colors">ผลกระทบ</a>
+                    <a href="#sdgs" class="hover:text-skyclear-600 transition-colors">SDGs</a>
+                    <a href="#activities" class="hover:text-skyclear-600 transition-colors">กิจกรรม</a>
+                    <a href="#action" class="px-4 py-2 rounded-full bg-leaf-600 hover:bg-leaf-700 text-white font-semibold transition-colors shadow-sm">
+                        ร่วมแคมเปญ
+                    </a>
+                </div>
+
+                <!-- ปุ่มเปิดเมนูมือถือ -->
+                <button id="mobile-menu-btn" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100" aria-label="เปิดเมนู">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- เมนูมือถือ (Mobile Dropdown) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-100 px-4 pt-2 pb-4 space-y-1 shadow-lg">
+            <a href="#situation" class="block px-3 py-2.5 rounded-xl text-base font-heading font-medium text-slate-700 hover:bg-skyclear-50 hover:text-skyclear-600">สถานการณ์</a>
+            <a href="#impacts" class="block px-3 py-2.5 rounded-xl text-base font-heading font-medium text-slate-700 hover:bg-skyclear-50 hover:text-skyclear-600">ผลกระทบ</a>
+            <a href="#sdgs" class="block px-3 py-2.5 rounded-xl text-base font-heading font-medium text-slate-700 hover:bg-skyclear-50 hover:text-skyclear-600">SDGs</a>
+            <a href="#activities" class="block px-3 py-2.5 rounded-xl text-base font-heading font-medium text-slate-700 hover:bg-skyclear-50 hover:text-skyclear-600">กิจกรรม</a>
+            <a href="#action" class="block px-3 py-2.5 rounded-xl text-base font-heading font-semibold text-leaf-700 bg-leaf-50">ร่วมแคมเปญ</a>
+        </div>
+    </nav>
+
+    <!-- ส่วนที่ 1: Hero Section -->
+    <header class="relative overflow-hidden bg-gradient-to-b from-skyclear-50 via-white to-leaf-50/40 pt-10 pb-16 sm:pt-16 sm:pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                
+                <!-- ข้อความเปิดหน้าเว็บ -->
+                <div class="lg:col-span-7 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white shadow-sm border border-skyclear-100 text-skyclear-700 text-xs sm:text-sm font-heading font-medium mb-5">
+                        <span class="w-2 h-2 rounded-full bg-leaf-600"></span>
+                        <span>BU4Global Issue Campaign • GE105</span>
+                    </div>
+
+                    <h1 class="font-heading font-extrabold text-4xl sm:text-5xl lg:text-6xl tracking-tight text-slate-900 leading-[1.15] mb-3">
+                        NO DUST,<br>
+                        <span class="bg-gradient-to-r from-skyclear-600 to-leaf-600 bg-clip-text text-transparent">JUST BREATHE</span>
+                    </h1>
+
+                    <p class="font-heading font-bold text-xl sm:text-2xl text-slate-800 mb-2">
+                        ทวงคืนฟ้าใส ให้เชียงใหม่ได้หายใจ
+                    </p>
+
+                    <p class="font-heading font-semibold text-base sm:text-lg text-leaf-700 mb-5">
+                        “หยุดเผา ลดฝุ่น คืนฟ้าใสให้เชียงใหม่”
+                    </p>
+
+                    <p class="text-base sm:text-lg text-slate-600 font-light leading-relaxed max-w-2xl mx-auto lg:mx-0 mb-8">
+                        แคมเปญรณรงค์สร้างความตระหนักรู้และส่งเสริมการมีส่วนร่วมในการลดปัญหาฝุ่นละอองขนาดเล็ก PM2.5 ในพื้นที่จังหวัดเชียงใหม่ เพื่อคืนอากาศบริสุทธิ์และคุณภาพชีวิตที่ดีอย่างยั่งยืน
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5">
+                        <a href="#action" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-leaf-600 hover:bg-leaf-700 text-white font-heading font-semibold text-base shadow-md transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="footprints" class="w-5 h-5"></i>
+                            <span>ร่วมแคมเปญตอนนี้</span>
+                        </a>
+                        <a href="#situation" class="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 font-heading font-semibold text-base shadow-sm transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="info" class="w-5 h-5 text-skyclear-600"></i>
+                            <span>ดูสถานการณ์ฝุ่น PM2.5</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ปุ่มสลับมุมมองแบบ Interactive (จำลองภาพดอยสุเทพ) -->
+                <div class="lg:col-span-5">
+                    <div class="bg-white rounded-3xl p-4 sm:p-5 shadow-xl border border-slate-100">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <span class="text-xs font-heading font-semibold text-slate-500 flex items-center gap-1.5">
+                                <i data-lucide="mountain" class="w-4 h-4 text-leaf-600"></i>
+                                <span>จำลองทัศนวิสัยดอยสุเทพ</span>
+                            </span>
+                            <div class="inline-flex rounded-xl bg-slate-100 p-1">
+                                <button id="btn-clear-view" onclick="setHeroVision('clear')" class="px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-skyclear-600 text-white shadow-sm transition-all">
+                                    เชียงใหม่ฟ้าใส
+                                </button>
+                                <button id="btn-smog-view" onclick="setHeroVision('smog')" class="px-3 py-1.5 rounded-lg text-xs font-heading font-semibold text-slate-600 hover:text-slate-900 transition-all">
+                                    วิกฤตหมอกควัน (ม.ค. - เม.ย.)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ภาพจำลอง SVG ดอยสุเทพ -->
+                        <div class="relative rounded-2xl overflow-hidden aspect-[4/3] border border-slate-200">
+                            <svg viewBox="0 0 400 300" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <linearGradient id="clearSkyGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#0288D1"/>
+                                        <stop offset="65%" stop-color="#81D4FA"/>
+                                        <stop offset="100%" stop-color="#E1F5FE"/>
+                                    </linearGradient>
+                                    <linearGradient id="smogSkyGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#455A64"/>
+                                        <stop offset="60%" stop-color="#78909C"/>
+                                        <stop offset="100%" stop-color="#CFD8DC"/>
+                                    </linearGradient>
+                                </defs>
+
+                                <rect id="scene-sky" width="400" height="300" fill="url(#clearSkyGrad)"/>
+                                <circle id="scene-sun" cx="315" cy="65" r="26" fill="#FDE047" opacity="0.95"/>
+
+                                <g id="scene-clouds" fill="#FFFFFF" opacity="0.85">
+                                    <ellipse cx="95" cy="60" rx="35" ry="12"/>
+                                    <ellipse cx="120" cy="56" rx="25" ry="10"/>
+                                    <ellipse cx="220" cy="45" rx="30" ry="10"/>
+                                </g>
+
+                                <!-- ทิวเขาดอยสุเทพ -->
+                                <path d="M-20 230 L110 105 L215 175 L295 115 L420 230 Z" fill="#1B5E20"/>
+                                <path d="M-10 245 L145 125 L265 205 L340 155 L420 245 Z" fill="#2E7D32"/>
+
+                                <!-- พระธาตุดอยสุเทพ -->
+                                <g transform="translate(138, 102)">
+                                    <rect x="2" y="18" width="10" height="6" fill="#F59E0B"/>
+                                    <polygon points="7,2 12,18 2,18" fill="#FBBF24"/>
+                                    <circle cx="7" cy="2" r="1.5" fill="#FEF08A"/>
+                                </g>
+
+                                <!-- ตัวเมืองและพื้นที่สีเขียว -->
+                                <rect x="0" y="230" width="400" height="70" fill="#33691E"/>
+                                <g fill="#475569" opacity="0.7">
+                                    <rect x="40" y="215" width="18" height="20" rx="2"/>
+                                    <rect x="65" y="210" width="24" height="25" rx="2"/>
+                                    <rect x="180" y="218" width="30" height="17" rx="2"/>
+                                    <rect x="280" y="212" width="22" height="23" rx="2"/>
+                                    <rect x="310" y="216" width="28" height="19" rx="2"/>
+                                </g>
+                                <g fill="#43A047">
+                                    <circle cx="25" cy="235" r="16"/>
+                                    <circle cx="110" cy="238" r="18"/>
+                                    <circle cx="155" cy="235" r="15"/>
+                                    <circle cx="245" cy="238" r="20"/>
+                                    <circle cx="365" cy="235" r="18"/>
+                                </g>
+
+                                <!-- ชั้นหมอกควัน (แสดงเมื่อเลือกโหมดวิกฤต) -->
+                                <g id="scene-smog-overlay" opacity="0" class="transition-opacity duration-500">
+                                    <rect width="400" height="300" fill="#455A64" opacity="0.68"/>
+                                    <circle cx="95" cy="155" r="4.5" fill="#EF6C00"/>
+                                    <circle cx="285" cy="165" r="5" fill="#EF6C00"/>
+                                    <ellipse cx="145" cy="145" rx="115" ry="34" fill="#B0BEC5" opacity="0.78"/>
+                                    <ellipse cx="260" cy="175" rx="135" ry="40" fill="#90A4AE" opacity="0.82"/>
+                                </g>
+                            </svg>
+
+                            <div class="absolute bottom-3 left-3 right-3 glass-card rounded-xl px-3.5 py-2.5 shadow-sm">
+                                <div class="flex items-center gap-2">
+                                    <span id="scene-dot" class="w-2.5 h-2.5 rounded-full bg-leaf-600 shrink-0"></span>
+                                    <span id="scene-status-text" class="text-xs sm:text-sm font-heading font-semibold text-slate-800">
+                                        เชียงใหม่ฟ้าใส — มองเห็นดอยสุเทพชัดเจน อากาศบริสุทธิ์
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- กล่องแสดงสถิติสำคัญ 3 กล่อง (ตรงตามรายงาน) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6 mt-12 sm:mt-16">
+                <!-- สถิติ 1 -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-alert-600">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-heading font-semibold text-alert-600 bg-orange-50 px-2.5 py-1 rounded-lg">ดัชนีคุณภาพอากาศ</span>
+                        <i data-lucide="alert-triangle" class="w-5 h-5 text-alert-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mb-1.5">160 US AQI</div>
+                    <p class="text-sm sm:text-base text-slate-600 font-light">
+                        ค่าคุณภาพอากาศในเขตเทศบาลนครเชียงใหม่ (26 มีนาคม 2569)
+                    </p>
+                </div>
+
+                <!-- สถิติ 2 -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-smog-700">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-heading font-semibold text-smog-700 bg-slate-100 px-2.5 py-1 rounded-lg">การจัดอันดับโลก</span>
+                        <i data-lucide="globe" class="w-5 h-5 text-smog-700"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mb-1.5">อันดับ 4 ของโลก</div>
+                    <p class="text-sm sm:text-base text-slate-600 font-light">
+                        เมืองที่มีมลพิษทางอากาศสูงสุดในโลก
+                    </p>
+                </div>
+
+                <!-- สถิติ 3 -->
+                <div class="bg-white rounded-2xl p-6 shadow-md border-l-4 border-alert-600">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-heading font-semibold text-alert-600 bg-orange-50 px-2.5 py-1 rounded-lg">การเผาและไฟป่า</span>
+                        <i data-lucide="flame" class="w-5 h-5 text-alert-600"></i>
+                    </div>
+                    <div class="font-heading font-extrabold text-3xl text-slate-900 mb-1.5">100+ จุด</div>
+                    <p class="text-sm sm:text-base text-slate-600 font-light">
+                        จุดความร้อน (Hotspots) ที่พบในจังหวัดเชียงใหม่
+                    </p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ส่วนที่ 2: สาเหตุและสถานการณ์ (Understand the Issue) -->
+    <section id="situation" class="py-16 sm:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-14">
+                <span class="text-skyclear-600 font-heading font-semibold text-sm">สถานการณ์และสาเหตุ</span>
+                <h2 class="font-heading font-bold text-3xl sm:text-4xl text-slate-900 mt-1.5 mb-4">
+                    ทำไมเชียงใหม่ถึงเผชิญวิกฤตฝุ่น PM2.5?
+                </h2>
+                <p class="text-slate-600 text-base sm:text-lg font-light leading-relaxed">
+                    จังหวัดเชียงใหม่มีลักษณะภูมิประเทศเป็น “แอ่งกระทะ” โอบล้อมด้วยภูเขาสูง ในช่วงฤดูแล้ง (มกราคม–เมษายน) เกิดภาวะอุณหภูมิผกผันและลมสงบ ทำให้ฝุ่นควันสะสมและระบายออกได้ยาก
+                </p>
+            </div>
+
+            <!-- การ์ด 3 สาเหตุหลัก -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+                <!-- สาเหตุ 1 -->
+                <div class="bg-slate-50 rounded-3xl p-7 border border-slate-200/80 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-100 text-alert-600 flex items-center justify-center mb-5">
+                        <i data-lucide="flame" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-xl text-slate-900 mb-3">
+                        1. การเผาในที่โล่งและไฟป่า
+                    </h3>
+                    <p class="text-slate-600 text-base font-light leading-relaxed">
+                        การลอบวางเชื้อเพลิงในพื้นที่ป่าและป่าเบญจพรรณ รวมถึงการเผาเศษวัสดุทางการเกษตรเพื่อเตรียมพื้นที่เพาะปลูก
+                    </p>
+                </div>
+
+                <!-- สาเหตุ 2 -->
+                <div class="bg-slate-50 rounded-3xl p-7 border border-slate-200/80 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-2xl bg-skyclear-100 text-skyclear-700 flex items-center justify-center mb-5">
+                        <i data-lucide="car" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-xl text-slate-900 mb-3">
+                        2. มลพิษจากการคมนาคม
+                    </h3>
+                    <p class="text-slate-600 text-base font-light leading-relaxed">
+                        ปริมาณรถยนต์และรถจักรยานยนต์จำนวนมากในเขตเมือง รวมถึงฝุ่นจากการสึกหรอของยางและเบรก
+                    </p>
+                </div>
+
+                <!-- สาเหตุ 3 -->
+                <div class="bg-slate-50 rounded-3xl p-7 border border-slate-200/80 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 rounded-2xl bg-slate-200 text-smog-800 flex items-center justify-center mb-5">
+                        <i data-lucide="cloud-fog" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="font-heading font-bold text-xl text-slate-900 mb-3">
+                        3. หมอกควันข้ามพรมแดน
+                    </h3>
+                    <p class="text-slate-600 text-base font-light leading-relaxed">
+                        ฝุ่นควันจากการเผาและไฟป่าที่พัดพาเข้ามาจากจังหวัดใกล้เคียงและประเทศเพื่อนบ้าน
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนที่ 3: ผลกระทบและความร่วมมือ (Health & Impact) -->
+    <section id="impacts" class="py-16 sm:py-24 bg-slate-50 border-y border-slate-200/60">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="text-leaf-600 font-heading font-semibold text-sm">ผลกระทบและความร่วมมือ</span>
+                <h2 class="font-heading font-bold text-3xl sm:text-4xl text-slate-900 mt-1.5 mb-3">
+                    ผลกระทบจากฝุ่น PM2.5 และผู้มีส่วนเกี่ยวข้อง
+                </h2>
+            </div>
+
+            <!-- ปุ่ม Tab สลับดูข้อมูล 3 หมวด -->
+            <div class="flex flex-wrap justify-center gap-2.5 sm:gap-3 mb-8">
+                <button onclick="switchImpactTab('duration')" id="tab-duration" class="impact-tab-btn px-5 py-3 rounded-2xl font-heading font-semibold text-sm sm:text-base bg-skyclear-600 text-white shadow-sm transition-all">
+                    ผลกระทบระยะสั้นและระยะยาว
+                </button>
+                <button onclick="switchImpactTab('risk')" id="tab-risk" class="impact-tab-btn px-5 py-3 rounded-2xl font-heading font-semibold text-sm sm:text-base bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all">
+                    กลุ่มเสี่ยงที่ได้รับผลกระทบสูง
+                </button>
+                <button onclick="switchImpactTab('stakeholders')" id="tab-stakeholders" class="impact-tab-btn px-5 py-3 rounded-2xl font-heading font-semibold text-sm sm:text-base bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all">
+                    5 ภาคส่วนผู้มีส่วนเกี่ยวข้อง
+                </button>
+            </div>
+
+            <!-- กล่องเนื้อหา Tab -->
+            <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-sm border border-slate-200/80">
+                
+                <!-- Tab 1: ผลกระทบระยะสั้นและระยะยาว -->
+                <div id="panel-duration" class="impact-panel grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="p-6 rounded-2xl bg-skyclear-50/70 border border-skyclear-100">
+                        <div class="flex items-center gap-2.5 mb-3">
+                            <i data-lucide="zap" class="w-5 h-5 text-skyclear-600"></i>
+                            <h3 class="font-heading font-bold text-xl text-slate-900">ผลกระทบระยะสั้น</h3>
+                        </div>
+                        <p class="text-slate-700 text-base font-light leading-relaxed">
+                            ไอ จาม เจ็บคอ หายใจลำบาก แสบตา ผิวหนังระคายเคือง งดกิจกรรมกลางแจ้ง และทัศนวิสัยการเดินทางลดลง
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-orange-50/70 border border-orange-100">
+                        <div class="flex items-center gap-2.5 mb-3">
+                            <i data-lucide="heart-pulse" class="w-5 h-5 text-alert-600"></i>
+                            <h3 class="font-heading font-bold text-xl text-slate-900">ผลกระทบระยะยาว</h3>
+                        </div>
+                        <p class="text-slate-700 text-base font-light leading-relaxed">
+                            เสี่ยงโรคปอดเรื้อรัง โรคหัวใจและหลอดเลือด โรคมะเร็งปอด ค่าใช้จ่ายรักษาพยาบาลสูงขึ้น และกระทบเศรษฐกิจการท่องเที่ยว
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tab 2: กลุ่มเสี่ยงที่ได้รับผลกระทบสูง -->
+                <div id="panel-risk" class="impact-panel hidden grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 rounded-2xl bg-red-50/60 border border-red-100">
+                        <h3 class="font-heading font-bold text-lg text-slate-900 mb-2">ผู้ป่วย 4 กลุ่มโรคสำคัญ</h3>
+                        <p class="text-slate-700 text-sm sm:text-base font-light leading-relaxed">
+                            โรคปอดอุดกั้นเรื้อรัง เยื่อบุตาขาวอักเสบ ผิวหนังอักเสบ และโรคหัวใจและหลอดเลือด
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-red-50/60 border border-red-100">
+                        <h3 class="font-heading font-bold text-lg text-slate-900 mb-2">กลุ่มเปราะบาง</h3>
+                        <p class="text-slate-700 text-sm sm:text-base font-light leading-relaxed">
+                            เด็กเล็ก หญิงตั้งครรภ์ และผู้สูงอายุ
+                        </p>
+                    </div>
+
+                    <div class="p-6 rounded-2xl bg-red-50/60 border border-red-100">
+                        <h3 class="font-heading font-bold text-lg text-slate-900 mb-2">ผู้ทำงานกลางแจ้ง</h3>
+                        <p class="text-slate-700 text-sm sm:text-base font-light leading-relaxed">
+                            เกษตรกรและผู้ที่ปฏิบัติงานนอกอาคารเป็นเวลานาน
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Tab 3: 5 ภาคส่วนผู้มีส่วนเกี่ยวข้อง -->
+                <div id="panel-stakeholders" class="impact-panel hidden grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70">
+                        <span class="text-xs font-heading font-bold text-skyclear-600">01 • ภาครัฐ</span>
+                        <p class="text-slate-700 text-sm sm:text-base font-light mt-1.5 leading-relaxed">
+                            กำหนดมาตรการควบคุมการเผา ป้องกันไฟป่า และตรวจวัดคุณภาพอากาศ
+                        </p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70">
+                        <span class="text-xs font-heading font-bold text-skyclear-600">02 • ประชาชนและชุมชน</span>
+                        <p class="text-slate-700 text-sm sm:text-base font-light mt-1.5 leading-relaxed">
+                            ลดการเผาขยะ แจ้งเหตุไฟป่า และเฝ้าระวังในพื้นที่
+                        </p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70">
+                        <span class="text-xs font-heading font-bold text-skyclear-600">03 • เกษตรกร</span>
+                        <p class="text-slate-700 text-sm sm:text-base font-light mt-1.5 leading-relaxed">
+                            ปรับเปลี่ยนจากการเผามาเป็นการไถกลบหรือทำปุ๋ยหมัก
+                        </p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70">
+                        <span class="text-xs font-heading font-bold text-skyclear-600">04 • ภาคเอกชน</span>
+                        <p class="text-slate-700 text-sm sm:text-base font-light mt-1.5 leading-relaxed">
+                            ลดการปล่อยมลพิษและสนับสนุนอุปกรณ์ป้องกันฝุ่น
+                        </p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70 sm:col-span-2 lg:col-span-2">
+                        <span class="text-xs font-heading font-bold text-skyclear-600">05 • มหาวิทยาลัยและนักวิจัย</span>
+                        <p class="text-slate-700 text-sm sm:text-base font-light mt-1.5 leading-relaxed">
+                            ศึกษาสาเหตุ พัฒนาเทคโนโลยีตรวจวัด และเสนอแนวทางแก้ไข
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนที่ 4: ความเชื่อมโยงกับเป้าหมายการพัฒนาที่ยั่งยืน (SDGs) -->
+    <section id="sdgs" class="py-16 sm:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-skyclear-600 font-heading font-semibold text-sm">Sustainable Development Goals</span>
+                <h2 class="font-heading font-bold text-3xl sm:text-4xl text-slate-900 mt-1.5 mb-3">
+                    ขับเคลื่อน 5 เป้าหมาย SDGs เพื่อความยั่งยืน
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
+                <!-- SDG 3 -->
+                <div class="rounded-3xl p-6 text-white shadow-md flex flex-col justify-between" style="background-color: #4C9F38;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-heading font-extrabold text-2xl">SDG 3</span>
+                            <i data-lucide="heart-pulse" class="w-6 h-6 opacity-90"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-base mb-2">สุขภาพและความเป็นอยู่ที่ดี</h3>
+                        <p class="text-sm text-white/95 font-light leading-relaxed">
+                            ลดโรคทางเดินหายใจ ส่งเสริมการเข้าถึงหน้ากากป้องกันฝุ่นและห้องปลอดฝุ่น
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SDG 11 -->
+                <div class="rounded-3xl p-6 text-white shadow-md flex flex-col justify-between" style="background-color: #FD9D24;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-heading font-extrabold text-2xl">SDG 11</span>
+                            <i data-lucide="building-2" class="w-6 h-6 opacity-90"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-base mb-2">เมืองและชุมชนที่ยั่งยืน</h3>
+                        <p class="text-sm text-white/95 font-light leading-relaxed">
+                            พัฒนาเชียงใหม่ให้มีสภาพแวดล้อมสะอาด ปลอดภัย และมีคุณภาพชีวิตที่ดี
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SDG 13 -->
+                <div class="rounded-3xl p-6 text-white shadow-md flex flex-col justify-between" style="background-color: #3F7E44;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-heading font-extrabold text-2xl">SDG 13</span>
+                            <i data-lucide="cloud-sun" class="w-6 h-6 opacity-90"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-base mb-2">การรับมือการเปลี่ยนแปลงสภาพภูมิอากาศ</h3>
+                        <p class="text-sm text-white/95 font-light leading-relaxed">
+                            ลดการเผาในพื้นที่เกษตรและป่าไม้ เตรียมพร้อมรับมือไฟป่า
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SDG 15 -->
+                <div class="rounded-3xl p-6 text-white shadow-md flex flex-col justify-between" style="background-color: #56C02B;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-heading font-extrabold text-2xl">SDG 15</span>
+                            <i data-lucide="trees" class="w-6 h-6 opacity-90"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-base mb-2">ระบบนิเวศบนบก</h3>
+                        <p class="text-sm text-white/95 font-light leading-relaxed">
+                            อนุรักษ์และฟื้นฟูพื้นที่ป่าไม้ รักษาสมดุลของระบบนิเวศ
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SDG 17 -->
+                <div class="rounded-3xl p-6 text-white shadow-md flex flex-col justify-between" style="background-color: #19486A;">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-heading font-extrabold text-2xl">SDG 17</span>
+                            <i data-lucide="handshake" class="w-6 h-6 opacity-90"></i>
+                        </div>
+                        <h3 class="font-heading font-bold text-base mb-2">ความร่วมมือเพื่อการพัฒนาที่ยั่งยืน</h3>
+                        <p class="text-sm text-white/95 font-light leading-relaxed">
+                            ผสานความร่วมมือจากภาครัฐ ประชาชน เกษตรกร เอกชน และประเทศเพื่อนบ้าน
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนที่ 5: 3 กิจกรรมรณรงค์หลัก (Campaign Activities) -->
+    <section id="activities" class="py-16 sm:py-24 bg-gradient-to-b from-skyclear-50/70 to-leaf-50/70 border-t border-skyclear-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-leaf-700 font-heading font-semibold text-sm">Campaign for Change</span>
+                <h2 class="font-heading font-bold text-3xl sm:text-4xl text-slate-900 mt-1.5 mb-3">
+                    กิจกรรมรณรงค์ “NO DUST, JUST BREATHE”
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-7">
+                <!-- กิจกรรมที่ 1 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-slate-100 flex flex-col">
+                    <div class="bg-gradient-to-r from-smog-800 to-skyclear-700 p-6 text-white">
+                        <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-heading font-medium mb-3">กิจกรรมที่ 1</span>
+                        <h3 class="font-heading font-extrabold text-2xl mb-1">NO DUST VIDEO</h3>
+                        <p class="text-skyclear-100 text-sm font-heading">“ส่งเสียงผ่านคลิป เปลี่ยนสังคม”</p>
+                    </div>
+                    <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                        <p class="text-slate-600 text-base font-light leading-relaxed">
+                            คลิปวิดีโอสั้นนำเสนอสถานการณ์หมอกควัน สาเหตุ และผลกระทบต่อสุขภาพ เผยแพร่ผ่าน TikTok, Instagram และ Facebook เพื่อสร้างกระแสการรับรู้ในกลุ่มวัยรุ่นและประชาชนทั่วไป
+                        </p>
+                    </div>
+                </div>
+
+                <!-- กิจกรรมที่ 2 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-md border border-slate-100 flex flex-col">
+                    <div class="bg-gradient-to-r from-skyclear-600 to-teal-600 p-6 text-white">
+                        <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-heading font-medium mb-3">กิจกรรมที่ 2</span>
+                        <h3 class="font-heading font-extrabold text-2xl mb-1">BREATHE SMART</h3>
+                        <p class="text-teal-100 text-sm font-heading">“รู้ทันฝุ่น ป้องกันตัวเอง”</p>
+                    </div>
+                    <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                        <p class="text-slate-600 text-base font-light leading-relaxed">
+                            สื่อ Infographic ให้ความรู้วิธีป้องกันตนเองในชีวิตประจำวัน เช่น เช็กค่าฝุ่นก่อนออกจากบ้าน งดกิจกรรมกลางแจ้งเมื่อฝุ่นสูง ปิดประตูหน้าต่าง และงดเผาขยะ เผยแพร่ผ่าน Facebook, Instagram และสถานศึกษา
+                        </p>
+                    </div>
+                </div>
+
+                <!-- กิจกรรมที่ 3 -->
+                <div class="bg-white rounded-3xl overflow-hidden shadow-lg border-2 border-leaf-600 flex flex-col">
+                    <div class="bg-gradient-to-r from-leaf-700 to-leaf-600 p-6 text-white">
+                        <span class="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-heading font-medium mb-3">กิจกรรมที่ 3</span>
+                        <h3 class="font-heading font-extrabold text-2xl mb-1">RUN TO BREATHE</h3>
+                        <p class="text-leaf-100 text-sm font-heading">“วิ่งเพื่อเพิ่มพื้นที่สีเขียว”</p>
+                    </div>
+                    <div class="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                        <p class="text-slate-600 text-base font-light leading-relaxed">
+                            กิจกรรมวิ่งสะสมระยะทางบริเวณพื้นที่ธรรมชาติ เช่น เชิงดอยสุเทพ ทุกๆ 2 กิโลเมตร แวะปลูกต้นกล้า 1 ต้น พร้อมรับเหรียญรางวัลกระดาษฝังเมล็ดพันธุ์ (Seed Paper Medal) ที่นำไปปลูกต่อที่บ้านได้
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนที่ 6: ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง (Call to Action - Interactive) -->
+    <section id="action" class="py-16 sm:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-skyclear-600 font-heading font-semibold text-sm">Call to Action</span>
+                <h2 class="font-heading font-bold text-3xl sm:text-4xl text-slate-900 mt-1.5 mb-3">
+                    ร่วมเป็นส่วนหนึ่งของการเปลี่ยนแปลง
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-7 items-stretch">
+                
+                <!-- กล่องที่ 1: Run for Green (คำนวณระยะทางวิ่งปลูกต้นไม้) -->
+                <div class="bg-leaf-50/60 rounded-3xl p-6 sm:p-7 border border-leaf-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-leaf-600 text-white flex items-center justify-center shrink-0">
+                                <i data-lucide="footprints" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-bold text-xl text-slate-900">Run for Green</h3>
+                                <p class="text-xs text-slate-600">คำนวณระยะทางวิ่งปลูกต้นไม้</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-2xl p-5 border border-leaf-100 mb-5">
+                            <div class="flex justify-between items-baseline mb-3">
+                                <label for="run-distance" class="text-sm font-heading font-medium text-slate-700">ระยะทางวิ่งเป้าหมาย:</label>
+                                <div>
+                                    <span id="distance-display" class="font-heading font-extrabold text-3xl text-leaf-600">6</span>
+                                    <span class="text-sm font-heading text-slate-500"> กิโลเมตร</span>
+                                </div>
+                            </div>
+
+                            <input type="range" id="run-distance" min="2" max="20" step="2" value="6" class="w-full mb-2">
+                            <div class="flex justify-between text-xs text-slate-400 font-heading">
+                                <span>2 กม.</span>
+                                <span>10 กม.</span>
+                                <span>20 กม.</span>
+                            </div>
+
+                            <div class="mt-5 pt-4 border-t border-slate-100 text-center">
+                                <div class="text-lg font-heading font-bold text-leaf-700">
+                                    ปลูกต้นกล้าได้ <span id="trees-count" class="text-2xl underline decoration-leaf-600">3</span> ต้น
+                                </div>
+                                <div id="trees-visual" class="text-xl mt-1.5 tracking-widest">🌱🌱🌱</div>
+                                <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+                                    รับสิทธิ์เหรียญ <strong>Seed Paper Medal</strong> และบันทึกผลแชร์ผ่านแอปพลิเคชัน <strong>Strava</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button onclick="registerRunSimulation()" id="btn-run-register" class="w-full py-3.5 rounded-2xl bg-leaf-600 hover:bg-leaf-700 text-white font-heading font-semibold text-sm sm:text-base shadow-sm transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            <span>ลงทะเบียนร่วมกิจกรรม (จำลอง)</span>
+                        </button>
+                        <p id="run-register-status" class="hidden text-center text-xs text-leaf-700 font-heading font-medium mt-2.5 bg-leaf-100 py-2 px-3 rounded-xl">
+                            ลงทะเบียนสำเร็จ! พร้อมร่วมวิ่งปลูกป่า 3 ต้น
+                        </p>
+                    </div>
+                </div>
+
+                <!-- กล่องที่ 2: Learn to Protect (เช็กลิสต์ป้องกันฝุ่นวันนี้) -->
+                <div class="bg-skyclear-50/60 rounded-3xl p-6 sm:p-7 border border-skyclear-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-skyclear-600 text-white flex items-center justify-center shrink-0">
+                                <i data-lucide="shield-check" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-bold text-xl text-slate-900">Learn to Protect</h3>
+                                <p class="text-xs text-slate-600">เช็กลิสต์ป้องกันฝุ่นวันนี้</p>
+                            </div>
+                        </div>
+
+                        <!-- แถบความคืบหน้าการดูแลตัวเอง -->
+                        <div class="bg-white rounded-2xl p-4 border border-skyclear-100 mb-4">
+                            <div class="flex justify-between items-center text-xs font-heading font-semibold mb-2">
+                                <span class="text-slate-700">ความคืบหน้าการดูแลตัวเอง:</span>
+                                <span id="checklist-percent" class="text-skyclear-600">0% (0/4 ข้อ)</span>
+                            </div>
+                            <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                                <div id="checklist-bar" class="h-full bg-gradient-to-r from-skyclear-500 to-leaf-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                        </div>
+
+                        <!-- รายการติ๊กถูก 4 ข้อตามรายงาน -->
+                        <div class="space-y-2.5">
+                            <label class="flex items-start gap-3 p-3 rounded-2xl bg-white border border-skyclear-100 cursor-pointer hover:border-skyclear-400 transition-colors">
+                                <input type="checkbox" class="protect-check mt-1 w-4 h-4 accent-skyclear-600 rounded" onchange="updateProtectProgress()">
+                                <span class="text-sm text-slate-700 font-light">ตรวจค่าฝุ่น PM2.5 ก่อนออกจากบ้าน</span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-2xl bg-white border border-skyclear-100 cursor-pointer hover:border-skyclear-400 transition-colors">
+                                <input type="checkbox" class="protect-check mt-1 w-4 h-4 accent-skyclear-600 rounded" onchange="updateProtectProgress()">
+                                <span class="text-sm text-slate-700 font-light">หลีกเลี่ยงกิจกรรมกลางแจ้งช่วงค่าฝุ่นสูง</span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-2xl bg-white border border-skyclear-100 cursor-pointer hover:border-skyclear-400 transition-colors">
+                                <input type="checkbox" class="protect-check mt-1 w-4 h-4 accent-skyclear-600 rounded" onchange="updateProtectProgress()">
+                                <span class="text-sm text-slate-700 font-light">ปิดประตูหน้าต่างและใช้เครื่องฟอกอากาศ</span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-2xl bg-white border border-skyclear-100 cursor-pointer hover:border-skyclear-400 transition-colors">
+                                <input type="checkbox" class="protect-check mt-1 w-4 h-4 accent-skyclear-600 rounded" onchange="updateProtectProgress()">
+                                <span class="text-sm text-slate-700 font-light">หลีกเลี่ยงการเผาขยะและวัสดุในที่โล่ง</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- กล่องที่ 3: Share to Change (แชร์เพื่อสร้างการเปลี่ยนแปลง) -->
+                <div class="bg-slate-100/80 rounded-3xl p-6 sm:p-7 border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-smog-800 text-white flex items-center justify-center shrink-0">
+                                <i data-lucide="share-2" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-heading font-bold text-xl text-slate-900">Share to Change</h3>
+                                <p class="text-xs text-slate-600">แชร์เพื่อสร้างการเปลี่ยนแปลง</p>
+                            </div>
+                        </div>
+
+                        <p class="text-sm sm:text-base text-slate-600 font-light leading-relaxed mb-4">
+                            ร่วมส่งต่อความตระหนักรู้เกี่ยวกับปัญหาฝุ่น PM2.5 ในจังหวัดเชียงใหม่ไปยังโซเชียลมีเดียของคุณ
+                        </p>
+
+                        <div class="bg-white rounded-2xl p-4 border border-slate-200 text-sm text-slate-700 font-light leading-relaxed mb-5">
+                            “หยุดเผา ลดฝุ่น คืนฟ้าใสให้เชียงใหม่” มาร่วมเป็นส่วนหนึ่งในการสร้างอากาศบริสุทธิ์ให้เชียงใหม่ได้หายใจอีกครั้ง 🌱💨<br>
+                            <span class="font-heading font-medium text-skyclear-600 block mt-2">
+                                #NoDustJustBreathe #ทวงคืนฟ้าใสให้เชียงใหม่ได้หายใจ
+                            </span>
+                        </div>
+                    </div>
+
+                    <button onclick="copyShareMessage()" class="w-full py-3.5 rounded-2xl bg-skyclear-600 hover:bg-skyclear-700 text-white font-heading font-semibold text-sm sm:text-base shadow-sm transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="copy" class="w-5 h-5"></i>
+                        <span>คัดลอกข้อความและแฮชแท็ก</span>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ส่วนที่ 7: Footer (ส่วนท้ายเว็บไซต์ - ไม่มีรายชื่อคณะผู้จัดทำ) -->
+    <footer class="bg-slate-900 text-slate-300 py-12 sm:py-16">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br from-skyclear-600 to-leaf-600 text-white mb-4 shadow-md">
+                <i data-lucide="wind" class="w-6 h-6"></i>
+            </div>
+
+            <h3 class="font-heading font-extrabold text-xl sm:text-2xl text-white mb-1">
+                NO DUST, JUST BREATHE
+            </h3>
+            <p class="font-heading font-medium text-skyclear-400 text-sm sm:text-base mb-6">
+                “หยุดเผา ลดฝุ่น คืนฟ้าใสให้เชียงใหม่”
+            </p>
+
+            <div class="bg-slate-800/70 rounded-2xl p-5 sm:p-6 border border-slate-800 max-w-3xl mx-auto mb-6">
+                <p class="text-sm sm:text-base text-slate-200 font-light leading-relaxed">
+                    โครงงานรณรงค์ภายใต้รายวิชา <strong class="font-medium text-white">GE105: Global Alliance and Emerging Issues</strong> (ภาคเรียนที่ 1 ปีการศึกษา 2569) คณะบริหารธุรกิจ มหาวิทยาลัยกรุงเทพ
+                </p>
+            </div>
+
+            <p class="text-xs sm:text-sm text-slate-400 font-light max-w-2xl mx-auto leading-relaxed">
+                หมายเหตุ: เว็บไซต์และสื่อประกอบแคมเปญนี้มีการใช้เครื่องมือ Generative AI เพื่อสนับสนุนการเรียบเรียงเนื้อหาและออกแบบองค์ประกอบภาพ โดยผ่านการตรวจสอบและปรับปรุงความถูกต้องตามข้อมูลทางวิชาการอย่างครบถ้วน
+            </p>
+        </div>
+    </footer>
+
+    <!-- สคริปต์ควบคุมการทำงาน (JavaScript) -->
+    <script>
+        // เรียกใช้งานไอคอน Lucide
+        lucide.createIcons();
+
+        // เปิด-ปิดเมนูบนมือถือ
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // 1. สลับมุมมองภาพดอยสุเทพ (เชียงใหม่ฟ้าใส vs วิกฤตหมอกควัน)
+        function setHeroVision(mode) {
+            const sky = document.getElementById('scene-sky');
+            const smogOverlay = document.getElementById('scene-smog-overlay');
+            const clouds = document.getElementById('scene-clouds');
+            const sun = document.getElementById('scene-sun');
+            const btnClear = document.getElementById('btn-clear-view');
+            const btnSmog = document.getElementById('btn-smog-view');
+            const statusText = document.getElementById('scene-status-text');
+            const statusDot = document.getElementById('scene-dot');
+
+            if (mode === 'smog') {
+                sky.setAttribute('fill', 'url(#smogSkyGrad)');
+                smogOverlay.setAttribute('opacity', '1');
+                clouds.setAttribute('opacity', '0.15');
+                sun.setAttribute('fill', '#EF6C00');
+                sun.setAttribute('opacity', '0.55');
+
+                btnSmog.className = 'px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-alert-600 text-white shadow-sm transition-all';
+                btnClear.className = 'px-3 py-1.5 rounded-lg text-xs font-heading font-semibold text-slate-600 hover:text-slate-900 transition-all';
+
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-alert-600 shrink-0';
+                statusText.textContent = 'วิกฤตหมอกควัน (ม.ค. - เม.ย.) — ฝุ่นควันสะสมในแอ่งกระทะ บดบังดอยสุเทพ';
+            } else {
+                sky.setAttribute('fill', 'url(#clearSkyGrad)');
+                smogOverlay.setAttribute('opacity', '0');
+                clouds.setAttribute('opacity', '0.85');
+                sun.setAttribute('fill', '#FDE047');
+                sun.setAttribute('opacity', '0.95');
+
+                btnClear.className = 'px-3 py-1.5 rounded-lg text-xs font-heading font-semibold bg-skyclear-600 text-white shadow-sm transition-all';
+                btnSmog.className = 'px-3 py-1.5 rounded-lg text-xs font-heading font-semibold text-slate-600 hover:text-slate-900 transition-all';
+
+                statusDot.className = 'w-2.5 h-2.5 rounded-full bg-leaf-600 shrink-0';
+                statusText.textContent = 'เชียงใหม่ฟ้าใส — มองเห็นดอยสุเทพชัดเจน อากาศบริสุทธิ์';
+            }
+        }
+
+        // 2. ระบบ Tab สลับดูข้อมูลผลกระทบและความร่วมมือ
+        function switchImpactTab(tabName) {
+            document.querySelectorAll('.impact-tab-btn').forEach(btn => {
+                btn.className = 'impact-tab-btn px-5 py-3 rounded-2xl font-heading font-semibold text-sm sm:text-base bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all';
+            });
+            const activeBtn = document.getElementById('tab-' + tabName);
+            activeBtn.className = 'impact-tab-btn px-5 py-3 rounded-2xl font-heading font-semibold text-sm sm:text-base bg-skyclear-600 text-white shadow-sm transition-all';
+
+            document.querySelectorAll('.impact-panel').forEach(panel => {
+                panel.classList.add('hidden');
+                panel.classList.remove('grid');
+            });
+            const activePanel = document.getElementById('panel-' + tabName);
+            activePanel.classList.remove('hidden');
+            activePanel.classList.add('grid');
+        }
+
+        // 3. คำนวณระยะทางวิ่งปลูกต้นไม้ (Run for Green: 2 - 20 กม.)
+        const runSlider = document.getElementById('run-distance');
+        const distanceDisplay = document.getElementById('distance-display');
+        const treesCount = document.getElementById('trees-count');
+        const treesVisual = document.getElementById('trees-visual');
+        const runRegisterStatus = document.getElementById('run-register-status');
+
+        runSlider.addEventListener('input', () => {
+            const km = parseInt(runSlider.value, 10);
+            const trees = Math.floor(km / 2);
+
+            distanceDisplay.textContent = km;
+            treesCount.textContent = trees;
+            treesVisual.textContent = '🌱'.repeat(trees);
+
+            if (!runRegisterStatus.classList.contains('hidden')) {
+                runRegisterStatus.textContent = `ลงทะเบียนสำเร็จ! เป้าหมายวิ่ง ${km} กม. (ปลูกต้นกล้า ${trees} ต้น)`;
+            }
+        });
+
+        function registerRunSimulation() {
+            const km = parseInt(runSlider.value, 10);
+            const trees = Math.floor(km / 2);
+            runRegisterStatus.textContent = `ลงทะเบียนสำเร็จ! เป้าหมายวิ่ง ${km} กม. (ปลูกต้นกล้า ${trees} ต้น)`;
+            runRegisterStatus.classList.remove('hidden');
+            showToast(`ลงทะเบียนร่วมกิจกรรมวิ่ง ${km} กม. เรียบร้อยแล้ว`);
+        }
+
+        // 4. เช็กลิสต์ป้องกันฝุ่นวันนี้ (Learn to Protect)
+        function updateProtectProgress() {
+            const checks = document.querySelectorAll('.protect-check');
+            const total = checks.length;
+            let checkedCount = 0;
+            checks.forEach(c => { if (c.checked) checkedCount++; });
+
+            const percent = Math.round((checkedCount / total) * 100);
+            document.getElementById('checklist-bar').style.width = percent + '%';
+            document.getElementById('checklist-percent').textContent = `${percent}% (${checkedCount}/${total} ข้อ)`;
+        }
+
+        // 5. คัดลอกข้อความและแฮชแท็กแคมเปญ (Share to Change)
+        function copyShareMessage() {
+            const message = '“หยุดเผา ลดฝุ่น คืนฟ้าใสให้เชียงใหม่” มาร่วมเป็นส่วนหนึ่งในการสร้างอากาศบริสุทธิ์ให้เชียงใหม่ได้หายใจอีกครั้ง 🌱💨 #NoDustJustBreathe #ทวงคืนฟ้าใสให้เชียงใหม่ได้หายใจ';
+            
+            const tempTextarea = document.createElement('textarea');
+            tempTextarea.value = message;
+            document.body.appendChild(tempTextarea);
+            tempTextarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('คัดลอกข้อความและแฮชแท็กเรียบร้อยแล้ว');
+            } catch (err) {
+                showToast('ไม่สามารถคัดลอกอัตโนมัติได้ กรุณาลองใหม่อีกครั้ง');
+            }
+            document.body.removeChild(tempTextarea);
+        }
+
+        // แสดงกล่องแจ้งเตือนมุมขวาล่าง
+        let toastTimer;
+        function showToast(text) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').textContent = text;
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
